@@ -2,7 +2,7 @@ unit acNetUtils;
 
 interface
 
-uses idHTTP, SysUtils, System.Classes, IdSSL, IdIOHandler;
+uses idHTTP, SysUtils, System.Classes, IdSSL, IdIOHandler, IdSSLOpenSSL;
 
 function getRemoteXmlContent(pUrl: string; http: TIdHTTP = nil): String; overload
 function getRemoteXmlContent(const pUrl: string; http: TIdHTTP; var erro: string; aRetornoStream: TStringStream): boolean; overload
@@ -14,8 +14,12 @@ implementation
 function getHTTPInstance: TidHTTP;
 var
   http: TIdHTTP;
+  LHandler: TIdSSLIOHandlerSocketOpenSSL;
 begin
   http := TIdHTTP.Create(nil);
+  LHandler := TIdSSLIOHandlerSocketOpenSSL.Create;
+  http.IOHandler := LHandler;
+  http.AllowCookies := True;
   http.HandleRedirects := True;
   http.ProtocolVersion := pv1_1;
   http.HTTPOptions := http.HTTPOptions + [hoKeepOrigProtocol];
