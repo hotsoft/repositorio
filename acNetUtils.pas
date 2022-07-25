@@ -18,6 +18,10 @@ var
 begin
   http := TIdHTTP.Create(nil);
   LHandler := TIdSSLIOHandlerSocketOpenSSL.Create;
+  LHandler := TIdSSLIOHandlerSocketOpenSSL.Create(http);
+  LHandler.SSLOptions.SSLVersions := [sslvTLSv1, sslvTLSv1_1, sslvTLSv1_2]; //Não alterar, usado no hibrido
+  LHandler.SSLOptions.Method := sslvTLSv1_2;
+  LHandler.PassThrough := False;
   http.IOHandler := LHandler;
   http.AllowCookies := True;
   http.HandleRedirects := True;
@@ -30,12 +34,22 @@ end;
 function getRemoteXmlContent(pUrl: string; http: TIdHTTP = nil): String;
 var
   criouHTTP: boolean;
+  IOHandler: TIdSSLIOHandlerSocketOpenSSL;
 begin
   criouHttp := false;
   if http = nil then
   begin
     criouHTTP := true;
     http := getHTTPINstance;
+
+    if pUrl.ToLower.Contains('https') then
+    begin
+      IOHandler := TIdSSLIOHandlerSocketOpenSSL.Create(http);
+      IOHandler.SSLOptions.SSLVersions := [sslvTLSv1_2];
+      IOHandler.SSLOptions.Method := sslvTLSv1_2;
+      IOHandler.PassThrough := False;
+      http.IOHandler := IOHandler;
+    end;
   end;
 
   try
