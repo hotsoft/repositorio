@@ -17,7 +17,6 @@ var
   LHandler: TIdSSLIOHandlerSocketOpenSSL;
 begin
   http := TIdHTTP.Create(nil);
-  LHandler := TIdSSLIOHandlerSocketOpenSSL.Create;
   LHandler := TIdSSLIOHandlerSocketOpenSSL.Create(http);
   LHandler.SSLOptions.SSLVersions := [sslvTLSv1, sslvTLSv1_1, sslvTLSv1_2]; //Não alterar, usado no hibrido
   LHandler.SSLOptions.Method := sslvTLSv1_2;
