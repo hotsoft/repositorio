@@ -47,6 +47,7 @@ function fillSpaces(str: string; size: integer): string;
 function parseRailsDate(str: string): TDateTime;
 function Mod10(Num : String) : Integer;
 function valorPorExtenso(vlr: real): string;
+function EscapeTextToJSON(const aValue: string): string;
 
 implementation
 
@@ -692,7 +693,15 @@ begin
   valorPorExtenso := s;
 end;
 
-
+function EscapeTextToJSON(const aValue: string): string;
+begin
+  Result := aValue;
+  Result := StringReplace(Result, '\', '\\', [rfReplaceAll]);
+  Result := StringReplace(Result, '"', '\"', [rfReplaceAll]);
+  Result := StringReplace(Result, #13#10, '\n', [rfReplaceAll]);
+  if Pos('\rtf1\', Result) <= 0 then   //o TAB no RTF nao deve ser alterado
+    Result := StringReplace(Result, #9, '\t', [rfReplaceAll]);
+end;
 
 end.
 
